@@ -1,0 +1,191 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Student name" content="James Aufleger">
+    <meta name="Student Number" content="040845311">
+
+    <style>
+      html {
+        font-size: 75%;
+        box-sizing: border-box;
+      }
+      * {
+        box-sizing: inherit;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: normal;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #fbab7e;
+        background-image: linear-gradient(62deg, #fbab7e 0%, #f7ce68 100%);
+        /* gradient slected from https://cssgradient.io/gradient-backgrounds/ */
+      }
+      .calc {
+        width: 500px;
+        left: 50%;
+        top: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        border: 3px solid lightblue;
+      }
+      .display {
+        width: 100%;
+        background: #916d87;
+        height: 55px;
+        color: #263030;
+        text-align: right;
+        padding: 0px 15px 0px;
+        font-size: 3rem;
+      }
+
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      button {
+        background: #32aba5;
+        border: 2px solid lightblue;
+        background-color: #32aba5;
+        font-size: 3rem;
+      }
+
+      .equal-sign {
+        color: blue;
+        height: 100%;
+        grid-column: 1 / 5;
+      }
+      
+
+      button:hover {
+        background-color: #fff;
+      }
+
+      .clear{
+        height: 100%;
+        grid-column: 3 /5 ;
+        color: red;
+      }
+
+      h1{
+          text-align: center;
+          margin-top: 100px;
+          font-size: 30pt;
+      }
+      
+    </style>
+    <title>Very Simple calc</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Time to Calculate</h1>
+    </div>
+
+    <div class="calc">
+      <section class="display">0</section>
+      <section class="keypad">
+          <button>*</button>
+          <button>/</button>
+          <button>+</button>
+          <button>-</button>
+          <button>1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>5</button>
+          <button>6</button>
+          <button>7</button>
+          <button>8</button>
+          <button>9</button>
+          <button>0</button>
+          <button class="clear">C</button>
+          <button class="equal-sign">=</button>
+
+      </section>
+    </div>
+  </body>
+  <script>
+
+    let runningTotal = 0;
+    let tempNum = "0";
+    let prevOp = null;
+    const display = document.querySelector(".display");
+
+    document.querySelector(".keypad").addEventListener("click", function (event) {
+        buttonClick(event.target.innerText);
+      });
+
+    function buttonClick(value) {
+      if (isNaN(parseInt(value))) {
+        specialOperators(value);
+      } else {
+        number(value);
+      }
+      update();
+    }
+    function doingMath(value) {
+      const intTempNum = parseInt(tempNum);
+      if (runningTotal === 0) {
+        runningTotal = intTempNum;
+      } else {
+        updateRunningTotal(intTempNum);
+      }
+      prevOp = value;
+      tempNum = "0";
+    }
+
+    function updateRunningTotal(intTempNum) {
+      if (prevOp === "+") 
+        runningTotal += intTempNum;
+      else if (prevOp === "-") 
+        runningTotal -= intTempNum;
+      else if (prevOp === "*") 
+        runningTotal *= intTempNum;
+      else if (prevOp === "/") 
+        runningTotal /= intTempNum;
+    }
+
+    function number(value) {
+      if (tempNum === "0") {
+        tempNum = value;
+      } else tempNum += value;
+    }
+
+    function update() {
+      display.innerText = tempNum;
+    }
+
+    function specialOperators(value) {
+      switch (value) {
+        case "C":
+          tempNum = "0";
+          runningTotal = 0;
+          prevOp = null;
+          break;
+        // equals
+        case "=":
+          if (prevOp === null) {
+            return;
+          } else {
+            updateRunningTotal(parseInt(tempNum));
+            prevOp = null;
+            tempNum = "" + runningTotal;
+            runningTotal = 0;
+            break;
+          }
+        default:
+          doingMath(value);
+          break;
+      }
+    }
+
+  
+    
+
+  </script>
+
+
+</html>
